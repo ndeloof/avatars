@@ -2,6 +2,7 @@ import logging
 
 import flask
 import pathlib
+from .db import DBManager
 
 import python_avatars as pa
 
@@ -31,9 +32,6 @@ part_mapping = {
     'accessory': 'AccessoryType',
 }
 
-docker_blue = '#086DD7'
-tilt_green = '#20BA31'
-
 @app.before_first_request
 def initialize():
     try:
@@ -45,6 +43,8 @@ def initialize():
     except AttributeError:
         pa.install_part(str(pathlib.Path(__file__).parent.joinpath('tilt_shirt.svg')), pa.ClothingType)
 
+
+conn = None
 
 @app.route('/api/avatar')
 def avatar():
@@ -61,13 +61,14 @@ def avatar():
             # enum by value, e.g. `#262E33`
             params[p] = part_enum(params[p])
 
-    clothing = 'tilt_shirt'
-    clothing_color = tilt_green
+    global conn
+    if not conn:
+        conn = DBManager(password_file='/run/secrets/db_password')
+        conn.populate_db()
 
-    # ↓↓↓ remove the leading # to uncomment ↓↓↓
-    clothing = 'docker_shirt'
-    clothing_color = docker_blue
-    # ↑↑↑ remove the leading # to uncomment ↑↑↑
+    company = 'docker'
+    clothing = company + '_shirt'
+    clothing_color = conn.query_clothing(company)
 
     svg = pa.Avatar(
         style=pa.AvatarStyle.CIRCLE,

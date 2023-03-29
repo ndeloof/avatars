@@ -1,10 +1,46 @@
 services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_DATABASE: avatar
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 --password="$$(cat /run/secrets/db_password)" --silent
+      interval: 1s
+      retries: 10
+    volumes:
+      - db_data:/var/lib/mysql  
+    networks:
+      - private
+
+  init:
+    profiles: [setup]
+    image: mysql
+    command: sh -c 'mysql -h db --password="toto" avatar < /var/db_init'
+    secrets:
+      - db_password
+    configs:
+      - source: db_init
+        target: /var/db_init
+    networks:
+      - private
+    depends_on:
+      db:
+        condition: service_healthy
+
   api:
     build:
       context: .
       dockerfile: ./deploy/api.dockerfile
     ports:
       - 5734:80
+    secrets:
+      - db_password
+    depends_on:
+      db:
+        condition: service_healthy
     x-develop:
       watch:
         - path: api/requirements.txt
@@ -12,6 +48,8 @@ services:
         - path: api/
           target: /app/api/
           action: sync
+    networks:
+      - private
 
   web:
     build:
@@ -28,3 +66,22 @@ services:
         - path: web/
           target: /app
           action: sync
+    networks:
+      - private
+      - public
+
+networks:
+  private:
+    internal: true
+  public:
+
+secrets:
+  db_password:
+    file: ~/.DB_SECRET
+
+volumes:
+  db_data:
+
+configs:
+  db_init:
+    file: init.sql    
