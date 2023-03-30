@@ -1,6 +1,7 @@
 import logging
 
 import flask
+import os
 import pathlib
 from .db import DBManager
 
@@ -63,7 +64,8 @@ def avatar():
 
     global conn
     if not conn:
-        conn = DBManager(password_file='/run/secrets/db_password')
+        password = os.environ['DB_PASSWORD']
+        conn = DBManager(password=password)
         conn.populate_db()
 
     company = 'docker'

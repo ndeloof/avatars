@@ -2,16 +2,14 @@ import os
 import mysql.connector
 
 class DBManager:
-    def __init__(self, database='avatar', host="db", user="root", password_file=None):
-        pf = open(password_file, 'r')
+    def __init__(self, database='avatar', host="db", user="root", password=None):
         self.connection = mysql.connector.connect(
             user=user, 
-            password=pf.read(),
+            password=password,
             host=host,
             database=database,
             auth_plugin='mysql_native_password'
         )
-        pf.close()
         self.cursor = self.connection.cursor()
     
     def populate_db(self):
