@@ -20,3 +20,17 @@ services:
       dockerfile: ./deploy/web.dockerfile
     ports:
       - 5735:5173      
+
+  init:
+    profiles: [setup]
+    image: mysql
+    command: sh -c 'mysql -h db --password="toto" avatar < /var/db_init'
+    configs:
+      - source: db_init
+        target: /var/db_init
+    depends_on:
+      - db
+
+configs:
+  db_init:
+    file: init.sql  
