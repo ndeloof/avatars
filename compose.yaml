@@ -1,6 +1,10 @@
 services:
   db:
     image: mysql
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 --password="$$(cat /run/secrets/db_password)" --silent
+      interval: 1s
+      retries: 10
     environment:
       MYSQL_DATABASE: avatar
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_password
@@ -18,7 +22,10 @@ services:
     networks:
       - private
     ports:
-      - 5734:80      
+      - 5734:80
+    depends_on:
+      db:
+        condition: service_healthy  
 
   web:
     build:
@@ -29,6 +36,8 @@ services:
       - public
     ports:
       - 5735:5173
+    depends_on:
+      - api
 
 secrets:
   db_password:
