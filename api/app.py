@@ -64,8 +64,9 @@ def avatar():
 
     global conn
     if not conn:
-        password = os.environ['DB_PASSWORD']
-        conn = DBManager(password=password)
+        pf = open('/run/secrets/db_password', 'r')
+        conn = DBManager(password=pf.read().strip())
+        pf.close()
         conn.populate_db()
 
     company = 'docker'
