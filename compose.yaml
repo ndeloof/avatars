@@ -1,0 +1,22 @@
+services:
+  db:
+    image: mysql
+    environment:
+      MYSQL_DATABASE: avatar
+      MYSQL_ROOT_PASSWORD: toto
+
+  api:
+    build:
+      context: .
+      dockerfile: ./deploy/api.dockerfile
+    environment:
+      - DB_PASSWORD=toto
+    ports:
+      - 5734:80      
+
+  web:
+    build:
+      context: .
+      dockerfile: ./deploy/web.dockerfile
+    ports:
+      - 5735:5173      
