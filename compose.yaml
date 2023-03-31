@@ -4,6 +4,8 @@ services:
     environment:
       MYSQL_DATABASE: avatar
       MYSQL_ROOT_PASSWORD: toto
+    volumes:
+      - db_data:/var/lib/mysql  
 
   api:
     build:
@@ -13,6 +15,8 @@ services:
       - DB_PASSWORD=toto
     ports:
       - 5734:80      
+    volumes:
+      - ./api:/app/api
 
   web:
     build:
@@ -20,3 +24,6 @@ services:
       dockerfile: ./deploy/web.dockerfile
     ports:
       - 5735:5173      
+
+volumes:
+  db_data:      
