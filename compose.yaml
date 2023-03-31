@@ -41,6 +41,24 @@ services:
     depends_on:
       - api
 
+  init:
+    profiles: [setup]
+    image: mysql
+    command: sh -c 'mysql -h db --password="$$(cat /run/secrets/db_password)" avatar < /var/db_init'
+    secrets:
+      - db_password      
+    configs:
+      - source: db_init
+        target: /var/db_init
+    networks:
+      - private
+    depends_on:
+      - db
+
+configs:
+  db_init:
+    file: init.sql       
+
 volumes:
   db_data:
 
