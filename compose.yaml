@@ -4,6 +4,8 @@ services:
     environment:
       MYSQL_DATABASE: avatar
       MYSQL_ROOT_PASSWORD: toto
+    networks:
+      - private
 
   api:
     build:
@@ -11,6 +13,8 @@ services:
       dockerfile: ./deploy/api.dockerfile
     environment:
       - DB_PASSWORD=toto
+    networks:
+      - private
     ports:
       - 5734:80      
 
@@ -18,5 +22,13 @@ services:
     build:
       context: .
       dockerfile: ./deploy/web.dockerfile
+    networks:
+      - private
+      - public
     ports:
-      - 5735:5173      
+      - 5735:5173
+
+networks:
+  private:
+    internal: true
+  public:
