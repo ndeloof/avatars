@@ -8,6 +8,8 @@ services:
     environment:
       MYSQL_DATABASE: avatar
       MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_password
+    volumes:
+      - db_data:/var/lib/mysql        
     secrets:
       - db_password      
     networks:
@@ -38,6 +40,9 @@ services:
       - 5735:5173
     depends_on:
       - api
+
+volumes:
+  db_data:
 
 secrets:
   db_password:
