@@ -3,7 +3,9 @@ services:
     image: mysql
     environment:
       MYSQL_DATABASE: avatar
-      MYSQL_ROOT_PASSWORD: toto
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password      
     networks:
       - private
 
@@ -11,8 +13,8 @@ services:
     build:
       context: .
       dockerfile: ./deploy/api.dockerfile
-    environment:
-      - DB_PASSWORD=toto
+    secrets:
+      - db_password
     networks:
       - private
     ports:
@@ -27,6 +29,10 @@ services:
       - public
     ports:
       - 5735:5173
+
+secrets:
+  db_password:
+    file: ~/.DB_SECRET
 
 networks:
   private:
