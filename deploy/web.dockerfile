@@ -17,9 +17,9 @@ FROM base as build
 RUN ["yarn", "build"]
 
 
-FROM nginx as web
+FROM nginx as production
 COPY --from=build /app/dist/ /usr/share/nginx/html/
-
+COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
 
 FROM base as dev
 
