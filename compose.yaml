@@ -9,6 +9,8 @@ services:
     build:
       context: .
       dockerfile: ./deploy/api.dockerfile
+      ssh: 
+        - default
     environment:
       - DB_PASSWORD=toto
     ports:
