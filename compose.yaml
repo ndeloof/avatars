@@ -23,6 +23,8 @@ services:
         - linux/arm64
         - linux/amd64
         - linux/386      
+      ssh: 
+        - default  
     secrets:
       - db_password
     networks:
