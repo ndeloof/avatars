@@ -1,4 +1,4 @@
-FROM python:3.10-slim-bullseye
+FROM --platform=${BUILDPLATFORM} python:3.10-slim-bullseye
 
 ENV PIP_DISABLE_PIP_VERSION_CHECK="1"
 

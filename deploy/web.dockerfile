@@ -1,4 +1,4 @@
-FROM node:18-bullseye-slim as base
+FROM --platform=${BUILDPLATFORM} node:18-bullseye-slim as base
 
 ENV YARN_CACHE_FOLDER=/cache/yarn
 
@@ -17,7 +17,7 @@ FROM base as build
 RUN ["yarn", "build"]
 
 
-FROM nginx as production
+FROM --platform=${BUILDPLATFORM}  nginx:stable-alpine as production
 COPY --from=build /app/dist/ /usr/share/nginx/html/
 COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
 
