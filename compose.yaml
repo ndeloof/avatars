@@ -9,6 +9,11 @@ services:
     build:
       context: .
       dockerfile: ./deploy/api.dockerfile
+      platforms:
+      - linux/arm64
+      - linux/amd64
+      - linux/386
+
     environment:
       - DB_PASSWORD=toto
     ports:
