@@ -10,6 +10,8 @@ services:
     build:
       context: .
       dockerfile: ./deploy/api.dockerfile
+      ssh:
+        - default
       platforms:
         - linux/amd64
         - linux/arm64
