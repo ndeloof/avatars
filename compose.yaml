@@ -16,31 +16,13 @@ services:
       - private
 
   api:
-    build:
-      context: .
-      dockerfile: ./deploy/api.dockerfile
-      platforms:
-        - linux/arm64
-        - linux/amd64
-        - linux/386      
-      ssh: 
-        - default  
-    x-develop:
-      watch:
-        - path: api/requirements.txt
-          action: rebuild
-        - path: api/
-          target: /app/api/
-          action: sync              
-    secrets:
-      - db_password
-    networks:
-      - private
+    build: server
+    platform: wasi/wasm32
+    runtime: io.containerd.wasmedge.v1
     ports:
       - 5734:80
-    depends_on:
-      db:
-        condition: service_healthy  
+    networks:
+      - private
 
   web:
     build:
