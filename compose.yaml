@@ -6,13 +6,11 @@ services:
       MYSQL_ROOT_PASSWORD: toto
 
   api:
-    build:
-      context: .
-      dockerfile: ./deploy/api.dockerfile
-    environment:
-      - DB_PASSWORD=toto
+    build: server
+    platform: wasi/wasm32
+    runtime: io.containerd.wasmedge.v1
     ports:
-      - 5734:80      
+      - 5734:80
 
   web:
     build:
