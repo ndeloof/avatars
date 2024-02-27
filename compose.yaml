@@ -8,6 +8,7 @@ services:
       - private
 
   api:
+    image: avatar-api
     build:
       context: .
       dockerfile: ./deploy/api.dockerfile
@@ -19,6 +20,7 @@ services:
       - 5734:80      
 
   web:
+    image: avatar-web
     build:
       context: .
       dockerfile: ./deploy/web.dockerfile
